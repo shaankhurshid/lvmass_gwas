@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+#$ -o /medpop/afib/lvm_gwas/skhurshid/clumps/log/$JOB_NAME.$JOB_ID.log
+#$ -e /medpop/afib/lvm_gwas/skhurshid/clumps/err/$JOB_NAME.$JOB_ID.err
+#$ -cwd
+#$ -l h_vmem=40g
+#$ -l h_rt=15:00:00
+#$ -l h=!ugerbm-c00*
+#$ -pe smp 2 
+#$ -binding linear:2
+
+echo "=========================================================="
+echo "Starting on       : $(date)"
+echo "Running on node   : $(hostname)"
+echo "Current directory : $(pwd)"
+echo "Current job ID    : $JOB_ID"
+echo "Current job name  : $JOB_NAME"
+echo "Task index number : $TASK_ID"
+echo "=========================================================="
+
+cd /medpop/afib/skhurshid/lvm_gwas/clumps/
+/medpop/afib/software/plink1.9/Aug16_2016/plink --bfile /medpop/afib/skhurshid/acceleration_phewas/prs/filtered/1kg.merged.phase3_v5a.filtered.EUR \
+--clump-p1 0.0001 \
+--clump-p2 0.01 \
+--clump-r2 0.3 \
+--clump-kb 250 \
+--clump-snp-field ID \
+--clump-field P_BOLT_LMM \
+--clump /medpop/afib/skhurshid/lvm_gwas/gwas/v13_seg/v13_lvmi_seg_adjusted_bolt.imputed.filtered.unambiguous.noindel.forplinkprs.tsv \
+--threads 2 \
+--out out_prs4 --allow-no-sex
