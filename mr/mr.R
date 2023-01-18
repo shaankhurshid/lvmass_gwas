@@ -7,11 +7,11 @@
     for (i in exposures) {
       # Read in data
       if (i == "SBP") {
-        exp <- fread("/Volumes/medpop_esp2/karagam/UK_Biobank/Kiran_B/Projects/LVM_MR/MR/data/SBP_exp_weights.csv")
+        exp <- fread("SBP_exp_weights.csv")
       } else if (i == "DBP") {
-        exp <- fread("/Volumes/medpop_esp2/karagam/UK_Biobank/Kiran_B/Projects/LVM_MR/MR/data/DBP_exp_weights.csv")
+        exp <- fread("DBP_exp_weights.csv")
       } else if (i == "T2D") {
-        exp <- fread("/Volumes/medpop_esp2/karagam/UK_Biobank/Kiran_B/Projects/LVM_MR/MR/data/T2D_exp_weights.csv")
+        exp <- fread("T2D_exp_weights.csv")
       } else {
         print("Invalid exposure."); break
       }
@@ -26,9 +26,9 @@
         
         # Read in data -- CHANGE PATHS HERE IF UPDATING DATA
         if (j == "LVMi") {
-          out <- fread("/Volumes/medpop_afib/skhurshid/lvm_gwas/gwas/v23_seg_white/v23_lvmi_seg_white_bolt_imputed.filtered.tsv")
+          out <- fread("v23_lvmi_seg_white_bolt_imputed.filtered.tsv")
         } else if (j == "LVM") {
-          out <- fread("/Volumes/medpop_afib/skhurshid/lvm_gwas/gwas/v44_lvm_white/v44_lvm_seg_adjusted_white_bolt_imputed.filtered.tsv")
+          out <- fread("v44_lvm_seg_adjusted_white_bolt_imputed.filtered.tsv")
         } else {
           print("Invalid outcome")
           break
@@ -101,7 +101,7 @@
   
   # Run with specified outcome directory, will create subdirectories for each pheno (MAKE SURE NO "/" AT END OF OUTPUT DIR)
   
-  output_path <- "~/Documents/MGH Research/lvm_gwas/mr"
+  output_path <- "mr"
   
   exposures <- c("SBP","DBP","T2D")
   outcomes <- c("LVMi","LVM")
