@@ -18,7 +18,7 @@ setkey(censor,sample_id); setkey(labeled,sample_id); setkey(seg_lvm,sample_id)
 labeled[censor,sex := i.sex]
 seg_lvm[censor,sex := i.sex]
 
-## One person does not have sex
+## One person does not have sex (N = 44537 - 1 = 44536)
 seg_lvm <- seg_lvm[!is.na(sex)]
 
 ## Perform recalibration
@@ -62,18 +62,27 @@ seg_lvm[wt0,wt_unified := i.wt_unified]
 seg_lvm[c(!is.na(ht_unified) & !is.na(wt_unified)),bsa := (0.007184 * ht_unified^0.725 * wt_unified^0.425)]
 seg_lvm[!is.na(bsa),':='(lvmi_seg_adjusted = lvm_seg_adjusted / bsa)]
 
-## Remove negative outliers
-seg_lvm <- seg_lvm[lvm_seg_adjusted > 0]
-
-## Remove no BMI
+## Remove no BMI (N = 44536 - 63 = 44473)
 seg_lvm <- seg_lvm[!is.na(bsa)]
 
-## Remove withdrawals
-withdrawals <- fread('w7089_20200820.csv') # UKBB withdrawals
-seg_lvm <- seg_lvm[!(sample_id %in% withdrawals$sample_id)]
+## Outlier cleanup 
+## First, remove < 20 (N=44473 - 89 = 44384)
+seg_lvm <- seg_lvm[lvm_seg_adjusted > 20]
+
+## Second, remove outside 5xIQR (N=44384 - 2 = 44382)
+iqr <- as.numeric(quantile(seg_lvm$lvm_seg_adjusted,0.75) - quantile(seg_lvm$lvm_seg_adjusted,0.25))
+seg_lvm <- seg_lvm[c((lvm_seg_adjusted > (median(lvm_seg_adjusted) - 5*(iqr)))
+                     & (lvm_seg_adjusted < (median(lvm_seg_adjusted) + 5*(iqr)))),]
+
+seg_lvm[!is.na(bsa),':='(lvmi_seg_adjusted_int = qnorm((rank(lvmi_seg_adjusted,na.last="keep")-0.5)/sum(!is.na(lvmi_seg_adjusted))))]
+seg_lvm[!is.na(bsa),':='(lvmi_seg_adjusted_27 = lvm_seg_adjusted / ((ht_unified/100)^2.7))]
+
+## Remove withdrawals (N=44382 - 7 = 44375)
+withdrawals <- fread('w7089_20220222.csv') # UKBB withdrawals
+seg_lvm <- seg_lvm[!(sample_id %in% withdrawals$V1)]
 
 ## Scope columns
-seg_lvm <- seg_lvm[,c('sample_id','sex','lvm_seg_adjusted','lvmi_seg_adjusted')]
+seg_lvm <- seg_lvm[,c('sample_id','sex','lvm_seg_adjusted','lvmi_seg_adjusted','lvmi_seg_adjusted_27','lvmi_seg_adjusted_int')]
 
 # Save out
 write.csv(seg_lvm,'seg_lvm.csv',row.names=F,quote=F)
