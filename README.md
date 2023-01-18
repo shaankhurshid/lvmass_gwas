@@ -1,7 +1,7 @@
 # lvmass_gwas
 These scripts were used to perform the analyses described in the LV Mass GWAS manuscript by Khurshid et al. (https://www.medrxiv.org/content/10.1101/2022.01.09.22268962v1)
 
-All scripts written by Shaan Khurshid 2022, excepting the GWAS bash scripts which were written by James Pirruccello (https://github.com/carbocation), see header information.
+All scripts written by Shaan Khurshid, excepting the GWAS bash scripts which were written by James Pirruccello (https://github.com/carbocation), see header information.
 
 # Overview
 * "prep_gwas" - contains scripts used to prepare phenotype files for GWAS using BOLT-LMM
